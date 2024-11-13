@@ -1,7 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using FortniteAPI.Models;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();  // Log to the console
+    logging.AddDebug();    // Log to the debug output window
+    logging.AddEventSourceLogger(); // Log to EventSource for diagnostics
+});
 
 // Add services to the container.
 

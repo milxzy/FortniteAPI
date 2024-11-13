@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FortniteAPI.Migrations
 {
     [DbContext(typeof(FortniteContext))]
-    [Migration("20241112204152_AddFortniteModels")]
-    partial class AddFortniteModels
+    [Migration("20241113154144_UpdatedSchema")]
+    partial class UpdatedSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,7 +66,8 @@ namespace FortniteAPI.Migrations
                     b.Property<string>("TeamName")
                         .HasColumnType("text");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("PK_Teams");
 
                     b.ToTable("Teams");
                 });

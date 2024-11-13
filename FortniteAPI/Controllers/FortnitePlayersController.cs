@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FortniteAPI.Models;
+using Microsoft.Extensions.Logging;
+
 
 namespace FortniteAPI.Controllers
 {
@@ -13,11 +15,13 @@ namespace FortniteAPI.Controllers
     [ApiController]
     public class FortnitePlayersController : ControllerBase
     {
+        private readonly ILogger<FortnitePlayersController> _logger;
         private readonly FortniteContext _context;
 
-        public FortnitePlayersController(FortniteContext context)
+        public FortnitePlayersController(FortniteContext context, ILogger<FortnitePlayersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/FortnitePlayers
@@ -78,7 +82,7 @@ namespace FortniteAPI.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(fortnitePlayer);
         }
 
         // POST: api/FortnitePlayers
@@ -86,8 +90,10 @@ namespace FortniteAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<FortnitePlayer>> PostFortnitePlayer(FortnitePlayer fortnitePlayer)
         {
+            _logger.LogInformation("POST request to create a new Fortnite player received. Player data: {@Player}", fortnitePlayer);
             _context.FortnitePlayers.Add(fortnitePlayer);
             await _context.SaveChangesAsync();
+
 
             return CreatedAtAction("GetFortnitePlayer", new { id = fortnitePlayer.ID }, fortnitePlayer);
         }

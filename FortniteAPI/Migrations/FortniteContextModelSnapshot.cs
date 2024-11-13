@@ -36,6 +36,7 @@ namespace FortniteAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Server")
@@ -63,7 +64,8 @@ namespace FortniteAPI.Migrations
                     b.Property<string>("TeamName")
                         .HasColumnType("text");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("PK_Teams");
 
                     b.ToTable("Teams");
                 });

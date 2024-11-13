@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FortniteAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AddFortniteModels : Migration
+    public partial class UpdatedSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

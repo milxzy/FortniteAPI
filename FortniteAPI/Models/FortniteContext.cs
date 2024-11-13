@@ -17,6 +17,11 @@ namespace FortniteAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<Team>(entity =>
+            {
+                entity.HasKey(e => e.ID).HasName("PK_Teams");
+            });
             modelBuilder.Entity<FortnitePlayer>(entity =>
             {
                 //primary key
@@ -29,6 +34,8 @@ namespace FortniteAPI.Models
                     .WithMany(t => t.Players)
                     .HasForeignKey(p => p.TeamID);
             });
+           
+
         }
 
         // on model create (configure foreign keys, or default properties)

@@ -5,7 +5,7 @@ namespace FortniteAPI.Models
     public class FortnitePlayer
     {
         public long ID { get; set; }
-        public string? Name { get; set; } = "";
+        public string Name { get; set; } = "";
         
         public int Earnings { get; set; }
         public string? Server { get; set; }

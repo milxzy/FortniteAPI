@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FortniteAPI.Migrations
 {
     [DbContext(typeof(FortniteContext))]
-    [Migration("20241112204627_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241113162021_Update")]
+    partial class Update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,7 @@ namespace FortniteAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Server")
@@ -66,7 +67,8 @@ namespace FortniteAPI.Migrations
                     b.Property<string>("TeamName")
                         .HasColumnType("text");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("PK_Teams");
 
                     b.ToTable("Teams");
                 });
