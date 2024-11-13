@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FortniteAPI.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace FortniteAPI.Controllers
@@ -88,6 +89,7 @@ namespace FortniteAPI.Controllers
         // POST: api/FortnitePlayers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<FortnitePlayer>> PostFortnitePlayer(FortnitePlayer fortnitePlayer)
         {
             _logger.LogInformation("POST request to create a new Fortnite player received. Player data: {@Player}", fortnitePlayer);
