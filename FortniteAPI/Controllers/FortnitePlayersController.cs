@@ -55,6 +55,28 @@ namespace FortniteAPI.Controllers
             return fortnitePlayer;
         }
 
+        // GET: api/FortnitePlayers/search
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<FortnitePlayer>>> SearchFortnitePlayers([FromQuery] string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+            {
+                return BadRequest("Search term cannot be empty.");
+            }
+
+            var results = await _context.FortnitePlayers
+                .Where(fp => fp.Name.Contains(term) || fp.Server.Contains(term)) // Adjust fields as necessary
+                .ToListAsync();
+
+            if (!results.Any())
+            {
+                return NotFound("No players match the search term.");
+            }
+
+            return results;
+        }
+
+
         // PUT: api/FortnitePlayers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
