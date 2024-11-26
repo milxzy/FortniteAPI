@@ -33,7 +33,7 @@ builder.Services.AddLogging(logging =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<FortniteContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("FortniteDatabase")));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseConnection")));
 builder.Services.AddDbContext<UsersContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
