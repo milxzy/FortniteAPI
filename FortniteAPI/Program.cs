@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Allow specific origin
+        policy.AllowAnyOrigin() // Allow specific origin
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -74,7 +74,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = "apiWithAuthBackend",
         ValidAudience = "apiWithAuthBackend",
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes("MilesDislikesDogs!Andthenewenglandpatriotsareagreatfootballteam")
+            Encoding.UTF8.GetBytes("MilesDislikesDogs!Andthenewenglandpatriotsareagreatfootballteam11111!!!!!")
             ),
     };
 });

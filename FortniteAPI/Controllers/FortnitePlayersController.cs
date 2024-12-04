@@ -80,6 +80,7 @@ namespace FortniteAPI.Controllers
         // PUT: api/FortnitePlayers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+       [Authorize]
         public async Task<IActionResult> PutFortnitePlayer(long id, FortnitePlayer fortnitePlayer)
         {
             if (id != fortnitePlayer.ID)
@@ -124,6 +125,7 @@ namespace FortniteAPI.Controllers
 
         // DELETE: api/FortnitePlayers/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteFortnitePlayer(long id)
         {
             var fortnitePlayer = await _context.FortnitePlayers.FindAsync(id);

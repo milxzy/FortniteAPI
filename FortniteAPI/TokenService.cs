@@ -59,7 +59,7 @@ namespace FortniteAPI
         {
             return new SigningCredentials(
                 new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes("MilesDislikesDogs!Andthenewenglandpatriotsareagreatfootballteam")
+                    Encoding.UTF8.GetBytes("MilesDislikesDogs!Andthenewenglandpatriotsareagreatfootballteam11111!!!!!")
                 ),
                 SecurityAlgorithms.HmacSha256
             );
