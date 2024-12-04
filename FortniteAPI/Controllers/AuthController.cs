@@ -47,31 +47,39 @@ public class AuthController : ControllerBase
     [Route("login")]
     public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
-        }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        var managedUser = await _userManager.FindByEmailAsync(request.Email);
-        if (managedUser == null)
-        {
-            return BadRequest("Bad credentials");
+            var managedUser = await _userManager.FindByEmailAsync(request.Email);
+            if (managedUser == null)
+            {
+                return BadRequest("Bad credentials");
+            }
+            var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
+            if (!isPasswordValid)
+            {
+                return BadRequest("Bad credentials");
+            }
+            var userInDb = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+            if (userInDb is null)
+                return Unauthorized();
+            var accessToken = _tokenService.CreateToken(userInDb);
+            await _context.SaveChangesAsync();
+            return Ok(new AuthResponse
+            {
+                Username = userInDb.UserName,
+                Email = userInDb.Email,
+                Token = accessToken,
+            });
         }
-        var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
-        if (!isPasswordValid)
+        catch (Exception ex)
         {
-            return BadRequest("Bad credentials");
-        }
-        var userInDb = _context.Users.FirstOrDefault(u => u.Email == request.Email);
-        if (userInDb is null)
-            return Unauthorized();
-        var accessToken = _tokenService.CreateToken(userInDb);
-        await _context.SaveChangesAsync();
-        return Ok(new AuthResponse
-        {
-            Username = userInDb.UserName,
-            Email = userInDb.Email,
-            Token = accessToken,
-        });
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Message: {ex.Message}\nStack:{ex.StackTrace}");
+           
+        }        
     }
 }

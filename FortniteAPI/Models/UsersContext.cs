@@ -12,7 +12,8 @@ namespace FortniteAPI.Models
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseNpgsql("Host=localhost;Port=5432;Database=FortnitePlayersDB;Username=postgres;Password=1;");
+            options.UseNpgsql("User Id=postgres.ibgcjhdggdltmgoegwsa;Password=CounterStrike10!1;Server=aws-0-us-east-1.pooler.supabase.com;Port=5432;Database=postgres;");
+
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
