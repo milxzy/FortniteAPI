@@ -119,4 +119,12 @@ app.UseCors();
 
 app.MapControllers();
 
+app.MapGet("/", () => "Fortnite API is running!");
+
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 app.Run();
