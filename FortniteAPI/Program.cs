@@ -123,7 +123,7 @@ app.UseCors();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
-    RequestPath = ""  // Set an optional request path if you want a specific URL prefix (e.g., "/static")
+    RequestPath = "/index.html"  // Set an optional request path if you want a specific URL prefix (e.g., "/static")
 });
 
 app.MapControllers();
