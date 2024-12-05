@@ -1,1 +1,1 @@
-﻿web: dotnet FortniteAPI/bin/publish/FortniteAPI.dll --urls "http://*:$PORT"
+web: dotnet FortniteAPI.dll --urls "http://*:$PORT"
