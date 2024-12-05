@@ -1,1 +1,1 @@
-web: cd FortniteAPI\FortniteAPI\bin\Release\net8.0\publish; ./FortniteAPI --urls "http://*:$PORT"
+web: cd FortniteAPI\bin\Release\net8.0\publish; ./FortniteAPI --urls "http://*:$PORT"
