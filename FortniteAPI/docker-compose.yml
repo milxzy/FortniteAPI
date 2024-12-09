@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  fortniteapi:
+    build: .
+    environment:
+      - DB_CONNECTION=${DB_CONNECTION}
+      - SUPABASE_CONNECTION=${DB_CONNECTION}
+      - ENCODE_SECRET=${ENCODE_SECRET}
+      - PORT=${PORT}
+      - AUTH_CONNECTION=${AUTH_CONNECTION}
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app

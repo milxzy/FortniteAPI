@@ -57,9 +57,10 @@ namespace FortniteAPI
         }
         private SigningCredentials CreateSigningCredentials()
         {
+            var encodeSecret = DotNetEnv.Env.GetString("ENCODE_SECRET");
             return new SigningCredentials(
                 new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes("MilesDislikesDogs!Andthenewenglandpatriotsareagreatfootballteam11111!!!!!")
+                    Encoding.UTF8.GetBytes(encodeSecret)
                 ),
                 SecurityAlgorithms.HmacSha256
             );
