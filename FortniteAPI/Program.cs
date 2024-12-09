@@ -64,6 +64,8 @@ builder.Services.AddEndpointsApiExplorer();
 //        }
 //    });
 //});
+builder.Logging.AddConsole();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters()
@@ -108,6 +110,9 @@ var app = builder.Build();
 //app.UseSwagger();
 //app.UseSwaggerUI();
 
+
+app.UseDefaultFiles(); // Looks for index.html, default.html, etc.
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
