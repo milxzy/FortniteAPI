@@ -143,7 +143,7 @@ var app = builder.Build();
 app.UseDefaultFiles(); // Looks for index.html, default.html, etc.
 app.UseStaticFiles();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
