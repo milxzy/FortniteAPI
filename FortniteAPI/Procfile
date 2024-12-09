@@ -1,1 +1,2 @@
-web: cd Frontend/bin/publish/; ./FortniteAPI --urls http://*:$PORT
+web: cd Froweb: dotnet FortniteAPI.dll --urls http://*:$PORT
+
