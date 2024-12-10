@@ -1,0 +1,10 @@
+services:
+  fortniteapi:
+    image: ${DOCKER_REGISTRY-}fortniteapi
+    container_name: fortniteapi
+    ports:
+      - 8080:8080
+    build:
+      context: .
+      dockerfile: FortniteAPI/Dockerfile
+    env_file: "FortniteAPI/.env"

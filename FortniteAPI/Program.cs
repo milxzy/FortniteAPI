@@ -8,10 +8,20 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using FortniteAPI;
 using Microsoft.OpenApi.Models;
+using DotNetEnv;
+using Microsoft.AspNetCore.Hosting;
+using Elfie.Serialization;
+using Supabase.Gotrue;
 using Microsoft.Extensions.FileProviders;
 
 
+
+
+
 var builder = WebApplication.CreateBuilder(args);
+DotNetEnv.Env.TraversePath().Load();
+
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -31,12 +41,30 @@ builder.Services.AddLogging(logging =>
 
 // Add services to the container.
 
+var dbConnection = DotNetEnv.Env.GetString("DB_CONNECTION");
+var authConnection = DotNetEnv.Env.GetString("AUTH_CONNECTION");
+
+if (string.IsNullOrEmpty(dbConnection))
+{
+    throw new InvalidOperationException("Database connection string is not set.");
+}
+
+if (string.IsNullOrEmpty(authConnection))
+{
+    throw new InvalidOperationException("Database connection string is not set.");
+}
+
+Console.WriteLine($"DATABASE_URL: {dbConnection}");
+Console.WriteLine($"AUTH_URL: {authConnection}");
+
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<FortniteContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseConnection")));
+    opt.UseNpgsql(dbConnection));
 builder.Services.AddDbContext<UsersContext>(options =>
-          options.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseConnection")));
+          options.UseNpgsql(authConnection));
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen(option =>
 //{
@@ -65,7 +93,11 @@ builder.Services.AddEndpointsApiExplorer();
 //        }
 //    });
 //});
+builder.Logging.AddConsole();
 
+
+
+var encodeSecret = DotNetEnv.Env.GetString("ENCODE_SECRET");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -78,7 +110,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = "apiWithAuthBackend",
         ValidAudience = "apiWithAuthBackend",
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes("MilesDislikesDogs!Andthenewenglandpatriotsareagreatfootballteam11111!!!!!")
+            Encoding.UTF8.GetBytes(encodeSecret)
             ),
     };
 });
@@ -94,6 +126,8 @@ builder.Services.AddIdentityCore<IdentityUser>(options =>
 })
     .AddEntityFrameworkStores<UsersContext>();
 builder.Services.AddScoped<TokenService, TokenService>();
+
+
 
 var app = builder.Build();
 
@@ -112,6 +146,9 @@ var app = builder.Build();
 //app.UseSwaggerUI();
 
 
+app.UseDefaultFiles(); // Looks for index.html, default.html, etc.
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -120,11 +157,11 @@ app.UseAuthorization();
 
 app.UseCors();
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
-    RequestPath = "/index.html"  // Set an optional request path if you want a specific URL prefix (e.g., "/static")
-});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
+//    RequestPath = "/index.html"  // Set an optional request path if you want a specific URL prefix (e.g., "/static")
+//});
 
 app.MapControllers();
 

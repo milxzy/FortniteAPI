@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 web: cd FortniteAPI/bin/publish; ./FortniteAPI --urls http://*:$PORT
+=======
+web: cd Froweb: dotnet FortniteAPI.dll --urls http://*:$PORT
+
+>>>>>>> 2428fedc3fb5cdeb7e99531685d380cf214c2318
