@@ -20,6 +20,8 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.TraversePath().Load();
+builder.Configuration.AddEnvironmentVariables();
+
 
 
 builder.Services.AddCors(options =>
@@ -43,6 +45,10 @@ builder.Services.AddLogging(logging =>
 
 var dbConnection = DotNetEnv.Env.GetString("DB_CONNECTION");
 var authConnection = DotNetEnv.Env.GetString("AUTH_CONNECTION");
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+var authString = Environment.GetEnvironmentVariable("AUTH_CONNECTION");
+
+
 
 if (string.IsNullOrEmpty(dbConnection))
 {
@@ -62,9 +68,9 @@ Console.WriteLine($"AUTH_URL: {authConnection}");
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<FortniteContext>(opt =>
-    opt.UseNpgsql(dbConnection));
+    opt.UseNpgsql(connectionString));
 builder.Services.AddDbContext<UsersContext>(options =>
-          options.UseNpgsql(authConnection));
+          options.UseNpgsql(authString));
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen(option =>
 //{
@@ -98,6 +104,8 @@ builder.Logging.AddConsole();
 
 
 var encodeSecret = DotNetEnv.Env.GetString("ENCODE_SECRET");
+var encodeString = Environment.GetEnvironmentVariable("ENCODE_SECRET");
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -110,7 +118,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = "apiWithAuthBackend",
         ValidAudience = "apiWithAuthBackend",
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(encodeSecret)
+            Encoding.UTF8.GetBytes(encodeString)
             ),
     };
 });
