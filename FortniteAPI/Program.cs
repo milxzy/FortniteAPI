@@ -54,6 +54,7 @@ if (string.IsNullOrEmpty(authConnection))
 }
 
 Console.WriteLine($"DATABASE_URL: {dbConnection}");
+Console.WriteLine($"AUTH_URL: {authConnection}");
 
 
 
@@ -122,6 +123,8 @@ builder.Services.AddIdentityCore<IdentityUser>(options =>
 })
     .AddEntityFrameworkStores<UsersContext>();
 builder.Services.AddScoped<TokenService, TokenService>();
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
 
 var app = builder.Build();
 
@@ -143,7 +146,7 @@ var app = builder.Build();
 app.UseDefaultFiles(); // Looks for index.html, default.html, etc.
 app.UseStaticFiles();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

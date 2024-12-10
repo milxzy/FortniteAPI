@@ -1,15 +1,18 @@
 version: '3.8'
-
 services:
-  fortniteapi:
-    build: .
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      - DB_CONNECTION=${DB_CONNECTION}
-      - SUPABASE_CONNECTION=${DB_CONNECTION}
-      - ENCODE_SECRET=${ENCODE_SECRET}
-      - PORT=${PORT}
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
       - AUTH_CONNECTION=${AUTH_CONNECTION}
+      - ENCODE_SECRET=${ENCODE_SECRET}
+      - DB_CONNECTION=${DB_CONNECTION}  # Reference your DB connection string
     ports:
-      - "5000:5000"
+      - "5000:5000"  # Expose port for API calls
     volumes:
       - .:/app
+    restart: always
+

@@ -1,6 +1,5 @@
 **/.classpath
 **/.dockerignore
-**/.env
 **/.git
 **/.gitignore
 **/.project
@@ -29,3 +28,4 @@ obj/
 *.lock.json
 .git/
 .gitignore
+!.env
