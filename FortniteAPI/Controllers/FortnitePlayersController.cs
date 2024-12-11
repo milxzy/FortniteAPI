@@ -25,23 +25,33 @@ namespace FortniteAPI.Controllers
             _logger = logger;
         }
 
-        // GET: api/FortnitePlayers
-        //public means it is accessible publicly
-        //async makes it run asynchronously
-        //Task is an async action that returns a value
-        //<ActionResult > is a type in .NET that wraps arround different HTTP responses
-        //IEnumerable iterates over the FortnitePlayers?
-        //_context references the DbContext which is the db connection
-        //FortnitePlayers is a DbSet property in the DbContext class that represents the FortnitePlayers Table
-        //ToListAsync is an async method that retrieves all records from FortnitePlayers into a list
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FortnitePlayer>>> GetFortnitePlayers()
         {
-            return await _context.FortnitePlayers.ToListAsync();
+            var players = await _context.FortnitePlayers
+                .Include(p => p.Team) // Include the related Team data
+                .ToListAsync();
+
+            // Project to a simpler object without circular references and unwanted properties
+            var playerResults = players.Select(player => new
+            {
+                player.ID,
+                player.Name,
+                player.Earnings,
+                player.Server,
+                player.Age,
+                player.TeamID,
+                TeamName = player.Team?.TeamName // Only return Team name to avoid nested data
+            }).ToList();
+
+            return Ok(playerResults);
         }
 
 
-        // GET: api/FortnitePlayers/5
+
+
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<FortnitePlayer>> GetFortnitePlayer(long id)
         {
@@ -55,7 +65,7 @@ namespace FortniteAPI.Controllers
             return fortnitePlayer;
         }
 
-        // GET: api/FortnitePlayers/search
+        
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<FortnitePlayer>>> SearchFortnitePlayers([FromQuery] string term)
         {
@@ -65,7 +75,7 @@ namespace FortniteAPI.Controllers
             }
 
             var results = await _context.FortnitePlayers
-                .Where(fp => fp.Name.Contains(term) || fp.Server.Contains(term)) // Adjust fields as necessary
+                .Where(fp => fp.Name.Contains(term) || fp.Server.Contains(term)) 
                 .ToListAsync();
 
             if (!results.Any())
@@ -77,8 +87,7 @@ namespace FortniteAPI.Controllers
         }
 
 
-        // PUT: api/FortnitePlayers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+      
         [HttpPut("{id}")]
        [Authorize]
         public async Task<IActionResult> PutFortnitePlayer(long id, FortnitePlayer fortnitePlayer)
@@ -109,21 +118,23 @@ namespace FortniteAPI.Controllers
             return Ok(fortnitePlayer);
         }
 
-        // POST: api/FortnitePlayers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<FortnitePlayer>> PostFortnitePlayer(FortnitePlayer fortnitePlayer)
+        public async Task<ActionResult<IEnumerable<FortnitePlayer>>> PostFortnitePlayers(IEnumerable<FortnitePlayer> fortnitePlayers)
         {
-            _logger.LogInformation("POST request to create a new Fortnite player received. Player data: {@Player}", fortnitePlayer);
-            _context.FortnitePlayers.Add(fortnitePlayer);
+            _logger.LogInformation("POST request to create new Fortnite players received. Players data: {@Players}", fortnitePlayers);
+
+           
+            _context.FortnitePlayers.AddRange(fortnitePlayers);
             await _context.SaveChangesAsync();
 
-
-            return CreatedAtAction("GetFortnitePlayer", new { id = fortnitePlayer.ID }, fortnitePlayer);
+            
+            return CreatedAtAction("GetFortnitePlayers", fortnitePlayers);
         }
 
-        // DELETE: api/FortnitePlayers/5
+
+        
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteFortnitePlayer(long id)

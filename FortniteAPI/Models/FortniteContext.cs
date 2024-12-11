@@ -5,9 +5,7 @@ namespace FortniteAPI.Models
 {
     public class FortniteContext : DbContext
     {
-        // nuget package manager console commands:
-        //add-migration InitialDeploy (create script to run on db)
-        //update-database (runs the script)
+
         public FortniteContext(DbContextOptions<FortniteContext> options)
             : base(options) 
         {
@@ -24,11 +22,9 @@ namespace FortniteAPI.Models
             });
             modelBuilder.Entity<FortnitePlayer>(entity =>
             {
-                //primary key
-                entity.HasKey(e => e.ID).HasName("Primary");
-                //default value for a bool
 
-                //one to many relationship
+                entity.HasKey(e => e.ID).HasName("Primary");
+
                 modelBuilder.Entity<FortnitePlayer>()
                     .HasOne(p => p.Team)
                     .WithMany(t => t.Players)
@@ -38,6 +34,6 @@ namespace FortniteAPI.Models
 
         }
 
-        // on model create (configure foreign keys, or default properties)
+
     }
 }

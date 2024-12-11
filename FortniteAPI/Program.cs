@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Elfie.Serialization;
 using Supabase.Gotrue;
 using Microsoft.Extensions.FileProviders;
+using System.Text.Json.Serialization;
 
 
 
@@ -28,7 +29,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin() // Allow specific origin
+        policy.AllowAnyOrigin() 
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -36,9 +37,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddLogging(logging =>
 {
-    logging.AddConsole();  // Log to the console
-    logging.AddDebug();    // Log to the debug output window
-    logging.AddEventSourceLogger(); // Log to EventSource for diagnostics
+    logging.AddConsole();  
+    logging.AddDebug();    
+    logging.AddEventSourceLogger(); 
 });
 
 // Add services to the container.
@@ -66,45 +67,25 @@ Console.WriteLine($"AUTH_URL: {authConnection}");
 
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddDbContext<FortniteContext>(opt =>
-    opt.UseNpgsql(connectionString));
+
+builder.Services.AddDbContext<FortniteContext>(options =>
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+        npgsqlOptions.CommandTimeout(60)) 
+);
+
 builder.Services.AddDbContext<UsersContext>(options =>
-          options.UseNpgsql(authString));
-builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen(option =>
-//{
-//    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Fortnite API", Version = "v1" });
-//    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//    {
-//        In = ParameterLocation.Header,
-//        Description = "Please enter a valid token",
-//        Name = "Authorization",
-//        Type = SecuritySchemeType.Http,
-//        BearerFormat = "JWT",
-//        Scheme = "Bearer"
-//    });
-//    option.AddSecurityRequirement(new OpenApiSecurityRequirement
-//    {
-//        {
-//            new OpenApiSecurityScheme
-//            {
-//                Reference = new OpenApiReference
-//                {
-//                    Type=ReferenceType.SecurityScheme,
-//                    Id="Bearer"
-//                }
-//            },
-//            new string[]{}
-//        }
-//    });
-//});
+    options.UseNpgsql(authString, npgsqlOptions =>
+        npgsqlOptions.CommandTimeout(60)) 
+);
+
 builder.Logging.AddConsole();
 
 
 
 var encodeSecret = DotNetEnv.Env.GetString("ENCODE_SECRET");
 var encodeString = Environment.GetEnvironmentVariable("ENCODE_SECRET");
+
+
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -139,22 +120,9 @@ builder.Services.AddScoped<TokenService, TokenService>();
 
 var app = builder.Build();
 
-//Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI(c =>
-//    {
-//        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FortniteAPI v1");
-//    });
-//}
 
 
-//app.UseSwagger();
-//app.UseSwaggerUI();
-
-
-app.UseDefaultFiles(); // Looks for index.html, default.html, etc.
+app.UseDefaultFiles(); 
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
@@ -165,11 +133,7 @@ app.UseAuthorization();
 
 app.UseCors();
 
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "public")),
-//    RequestPath = "/index.html"  // Set an optional request path if you want a specific URL prefix (e.g., "/static")
-//});
+
 
 app.MapControllers();
 
