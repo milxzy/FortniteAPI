@@ -32,6 +32,8 @@ namespace FortniteAPI.Controllers
                 .Include(p => p.Team) // Include the related Team data
                 .ToListAsync();
 
+            Console.WriteLine($"Players Retrieved: {players.Count()}");
+
             // Project to a simpler object without circular references and unwanted properties
             var playerResults = players.Select(player => new
             {
