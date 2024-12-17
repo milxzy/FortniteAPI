@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mail;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using FortniteAPI.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
+using SendGrid; 
+using SendGrid.Helpers.Mail;
 
 
 namespace FortniteAPI.Controllers
@@ -135,9 +139,60 @@ namespace FortniteAPI.Controllers
             return CreatedAtAction("GetFortnitePlayers", fortnitePlayers);
         }
 
+        [HttpPost("actions/request-admin-access")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RequestAdminAccess([FromBody] AdminRequestDto request)
+        {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Message))
+            {
+                return BadRequest("Email and message fields are required.");
+            }
 
-        
-        [HttpDelete("{id}")]
+            try
+            {
+                var sendgridApiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+                if (string.IsNullOrEmpty(sendgridApiKey))
+                {
+                    throw new Exception("SendGrid API key not set.");
+                }
+
+                var client = new SendGridClient(sendgridApiKey);
+                var from = new EmailAddress("noreply@yourdomain.com", "Fortnite API");
+                var subject = "Admin Access Request";
+                var to = new EmailAddress("admin@yourdomain.com");
+                var plainTextContent = $"User Email: {request.Email}\nMessage: {request.Message}";
+                var htmlContent = $"<strong>User Email:</strong> {request.Email}<br/><strong>Message:</strong> {request.Message}";
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+
+                var response = await client.SendEmailAsync(msg);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Accepted)
+                {
+                    return Ok("Admin access request sent successfully.");
+                }
+
+                return StatusCode((int)response.StatusCode, "Failed to send admin request.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error sending admin request: {0}", ex.Message);
+                return StatusCode(500, "An error occurred while sending the email.");
+            }
+        }
+
+        public class AdminRequestDto
+        {
+            public string Email { get; set; }
+            public string Message { get; set; }
+        }
+
+
+
+// DTO (Data Transfer Object) to hold admin request input
+
+
+
+[HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteFortnitePlayer(long id)
         {

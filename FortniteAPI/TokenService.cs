@@ -57,14 +57,19 @@ namespace FortniteAPI
         }
         private SigningCredentials CreateSigningCredentials()
         {
-            var encodeSecret = DotNetEnv.Env.GetString("ENCODE_SECRET");
+            // Safely retrieve the ENCODE_SECRET environment variable
             var encodeString = Environment.GetEnvironmentVariable("ENCODE_SECRET");
+
+            if (string.IsNullOrEmpty(encodeString))
+            {
+                throw new InvalidOperationException("ENCODE_SECRET environment variable is not set.");
+            }
+
             return new SigningCredentials(
-                new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(encodeString)
-                ),
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(encodeString)),
                 SecurityAlgorithms.HmacSha256
             );
         }
+
     }
 }
