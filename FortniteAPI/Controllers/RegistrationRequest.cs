@@ -10,5 +10,7 @@ namespace FortniteAPI.Controllers
         public string Password { get; set; } = null!;
         [Required]
         public string Email { get; set; } = null!;
+
+        public string Role { get; set; } = "regular";
     }
 }

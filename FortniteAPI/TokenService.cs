@@ -47,6 +47,14 @@ namespace FortniteAPI
                     new Claim(ClaimTypes.Name, value: user.UserName),
                     new Claim(ClaimTypes.Email, value: user.Email)
                 };
+
+                if (user is not null)
+                {
+                    // You would typically get this from a role provider or database
+                    // For now, I'm assuming you want a role claim of 'user' by default
+                    claims.Add(new Claim(ClaimTypes.Role, "user"));
+                }
+
                 return claims;
             }
             catch (Exception e)

@@ -95,7 +95,7 @@ namespace FortniteAPI.Controllers
 
       
         [HttpPut("{id}")]
-       [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutFortnitePlayer(long id, FortnitePlayer fortnitePlayer)
         {
             if (id != fortnitePlayer.ID)
@@ -157,9 +157,9 @@ namespace FortniteAPI.Controllers
                 }
 
                 var client = new SendGridClient(sendgridApiKey);
-                var from = new EmailAddress("noreply@yourdomain.com", "Fortnite API");
+                var from = new EmailAddress("noreply@milxzy.dev", "Fortnite API");
                 var subject = "Admin Access Request";
-                var to = new EmailAddress("admin@yourdomain.com");
+                var to = new EmailAddress("milxzy@milxzy.dev");
                 var plainTextContent = $"User Email: {request.Email}\nMessage: {request.Message}";
                 var htmlContent = $"<strong>User Email:</strong> {request.Email}<br/><strong>Message:</strong> {request.Message}";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
@@ -193,7 +193,7 @@ namespace FortniteAPI.Controllers
 
 
 [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteFortnitePlayer(long id)
         {
             var fortnitePlayer = await _context.FortnitePlayers.FindAsync(id);

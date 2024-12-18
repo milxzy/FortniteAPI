@@ -103,7 +103,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             ),
     };
 });
-builder.Services.AddIdentityCore<IdentityUser>(options =>
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = false;
@@ -113,12 +113,17 @@ builder.Services.AddIdentityCore<IdentityUser>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
 })
-    .AddEntityFrameworkStores<UsersContext>();
+.AddEntityFrameworkStores<UsersContext>()
+.AddDefaultTokenProviders();
+// Adds roles to the Identity configuration
+
 builder.Services.AddScoped<TokenService, TokenService>();
 
 
 
 var app = builder.Build();
+
+
 
 
 
@@ -136,6 +141,9 @@ app.UseCors();
 
 
 app.MapControllers();
+
+
+
 
 
 
